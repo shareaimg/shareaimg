@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Post Generator (Trim Fix)</title>
+    <style>
+        /* --- 全局重置 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #e6e9ea;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #0f1419;
+        }
+
+        /* --- 卡片容器 --- */
+        .share-card {
+            width: 100%;
+            max-width: 500px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- 顶部品牌条 --- */
+        .brand-header {
+            padding: 12px 20px;
+            background: #fafafa;
+            border-bottom: 1px solid #eff3f4;
+            display: flex; align-items: center;
+        }
+        .brand-icon {
+            width: 20px; height: 20px; background: #000; color: #fff;
+            border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 12px; margin-right: 8px;
+        }
+        .brand-text { font-size: 12px; color: #536471; font-weight: 500; }
+
+        /* --- 主帖区域 --- */
+        .post-container { padding: 20px 25px 5px 25px; }
+
+        /* 用户信息 */
+        .user-header { display: flex; align-items: center; margin-bottom: 12px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background-color: #eee; border: 1px solid #eee; }
+        .user-info { margin-left: 12px; display: flex; flex-direction: column; }
+        .display-name { font-size: 16px; font-weight: 700; color: #0f1419; display: flex; align-items: center; }
+        .verified-badge { width: 16px; height: 16px; margin-left: 4px; fill: #1d9bf0; }
+        .handle { font-size: 14px; color: #536471; }
+
+        /* 正文 */
+        .post-content {
+            font-size: 17px; line-height: 1.5; color: #0f1419;
+            margin-bottom: 12px; white-space: pre-wrap; word-wrap: break-word;
+        }
+
+        /* ★★★ 多图 Grid 布局系统 (通用) ★★★ */
+        .media-grid {
+            display: grid;
+            gap: 2px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #cfd9de;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        .media-grid img {
+            width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer;
+        }
+
+        /* 布局变体 */
+        .grid-1 { grid-template-columns: 1fr; }
+        .grid-1 img { max-height: 550px; }
+
+        .grid-2 { grid-template-columns: 1fr 1fr; aspect-ratio: 16/9; }
+        
+        .grid-3 { 
+            grid-template-columns: 1fr 1fr; 
+            grid-template-rows: 1fr 1fr;
+            aspect-ratio: 16/9; 
+        }
+        .grid-3 img:first-child { grid-row: 1 / 3; }
+
+        /* 4图 */
+        .grid-4 { 
+            grid-template-columns: repeat(2, 1fr); 
+            grid-template-rows: repeat(2, 1fr);
+            aspect-ratio: 16/9; 
+        }
+
+        /* --- 引用贴 --- */
+        #quoted-box {
+            display: none; /* 默认隐藏 */
+            border: 1px solid #cfd9de; border-radius: 12px;
+            padding: 12px; margin-bottom: 15px; margin-top: 10px;
+            overflow: hidden; background-color: #fff;
+        }
+        .quoted-user { display: flex; align-items: center; margin-bottom: 6px; }
+        .quoted-avatar { width: 20px; height: 20px; border-radius: 50%; margin-right: 6px; background-color: #eee; }
+        .quoted-name { font-size: 14px; font-weight: 700; color: #0f1419; margin-right: 4px;}
+        .quoted-handle { font-size: 14px; color: #536471; }
+        .quoted-text { font-size: 14px; color: #0f1419; line-height: 1.4; white-space: pre-wrap; }
+        
+        /* 引用贴内的图片容器 */
+        #quoted-media-wrapper { margin-top: 8px; }
+
+        /* --- 数据统计 --- */
+        .stats-box { margin-top: 5px; }
+        .time-views {
+            font-size: 15px; color: #536471; padding-bottom: 12px;
+            border-bottom: 1px solid #eff3f4; display: flex; align-items: center; flex-wrap: wrap;
+        }
+        .dot-separator { margin: 0 4px; }
+        .views-count { color: #0f1419; font-weight: 600; margin-left: 4px; }
+        
+        .engagement-data { display: flex; padding: 12px 0; border-bottom: 1px solid #eff3f4; justify-content: space-between; }
+        .metric-item { font-size: 14px; color: #536471; display: flex; align-items: center;}
+        .metric-item strong { color: #0f1419; font-weight: 700; margin-right: 4px; }
+
+        /* --- 评论区 --- */
+        .comments-section { background-color: #f7f9f9; padding: 20px 25px; min-height: 20px;}
+        .section-label { font-size: 13px; color: #536471; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
+        
+        .comment-item { display: flex; margin-bottom: 20px; border-bottom: 1px solid #eff3f4; padding-bottom: 20px;}
+        .comment-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .comment-avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 12px; background-color: #eee; flex-shrink: 0;}
+        .comment-body { flex: 1; min-width: 0; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 2px; align-items: baseline;}
+        .comment-name { font-size: 14px; font-weight: 700; color: #0f1419; margin-right: 5px;}
+        .comment-handle { font-size: 13px; color: #536471; font-weight: 400;}
+        .comment-time { font-size: 13px; color: #536471; }
+        .comment-text { font-size: 14px; color: #0f1419; line-height: 1.4; white-space: pre-wrap; margin-top: 2px;}
+        .comment-metrics { margin-top: 6px; font-size: 12px; color: #536471; }
+        
+        .empty-state { text-align: center; color: #999; font-size: 13px; font-style: italic; padding: 10px 0; }
+
+        /* --- 底部 --- */
+        .footer-branding {
+            background: #fff; padding: 20px 25px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-top: 1px dashed #cfd9de;
+        }
+        .footer-left h4 { font-size: 14px; margin-bottom: 4px; color: #0f1419; }
+        .footer-left p { font-size: 11px; color: #999; }
+        .qr-box { width: 50px; height: 50px; border: 1px solid #eee; border-radius: 6px; padding: 2px; }
+        .qr-box img { width: 100%; height: 100%; opacity: 0.9; }
+
+    </style>
+</head>
+<body>
+
+    <div class="share-card">
+        
+        <div class="brand-header">
+            <div class="brand-icon">X</div>
+            <div class="brand-text">Post Details</div>
+        </div>
+
+        <div class="post-container">
+            <div class="user-header">
+                <img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" class="avatar" id="main-avatar">
+                <div class="user-info">
+                    <div class="display-name">
+                        <span id="main-author">Name</span>
+                        <svg viewBox="0 0 24 24" class="verified-badge"><g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .495.083.965.238 1.4-1.272.65-2.147 2.02-2.147 3.6 0 1.435.716 2.69 1.77 3.46-.25.56-.39 1.18-.39 1.84 0 2.21 1.71 3.998 3.818 3.998.47 0 .92-.084 1.336-.25.62 1.333 1.926 2.25 3.437 2.25s2.818-.917 3.437-2.25c.415.165.866.25 1.336.25 2.11 0 3.818-1.79 3.818-4 0-.66-.14-1.28-.39-1.84 1.054-.77 1.77-2.025 1.77-3.46zM12 16.5c-2.485 0-4.5-2.015-4.5-4.5s2.015-4.5 4.5-4.5 4.5 2.015 4.5 4.5-2.015 4.5-4.5 4.5z"></path></g></svg>
+                    </div>
+                    <div class="handle" id="main-handle">@handle</div>
+                </div>
+            </div>
+
+            <div class="post-content" id="main-text"></div>
+            
+            <div id="media-wrapper"></div>
+
+            <div id="quoted-box">
+                <div class="quoted-user">
+                    <img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" class="quoted-avatar" id="quoted-avatar-img">
+                    <div style="display:flex; flex-direction:column; justify-content:center;">
+                        <div style="display:flex; align-items:center;">
+                            <span class="quoted-name" id="quoted-author"></span>
+                            <span class="quoted-handle" id="quoted-handle"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="quoted-text" id="quoted-text"></div>
+                <div id="quoted-media-wrapper"></div>
+            </div>
+
+            <div class="stats-box">
+                <div class="time-views">
+                    <span id="post-timestamp"></span>
+                    <span class="dot-separator">·</span>
+                    <span class="views-text"><strong class="views-count" id="metric-views">0</strong> Views</span>
+                </div>
+                <div class="engagement-data">
+                    <div class="metric-item"><strong id="metric-replies">0</strong> Replies</div>
+                    <div class="metric-item"><strong id="metric-reposts">0</strong> Reposts</div>
+                    <div class="metric-item"><strong id="metric-likes">0</strong> Likes</div>
+                    <div class="metric-item"><strong id="metric-bookmarks">0</strong> Bookmarks</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comments-section" id="comments-container">
+            <div class="section-label">Replies</div>
+            <div id="comments-list"></div>
+        </div>
+
+        <div class="footer-branding">
+            <div class="footer-left">
+                <h4>Scan QR Code</h4>
+                <p>View original post on X</p>
+            </div>
+            <div class="qr-box">
+                <img id="footer-qr" src="" alt="QR Code">
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- JSON 数据源 ---
+        const postData = {
+  "url": "https://x.com/ShanE48484/status/2005093990203592889",
+  "author": "Takapuna",
+  "handle": "@ShanE48484",
+  "time": "2025-12-28T01:50:34.000Z",
+  "text": "《色戒》没看过，好看吗？",
+  "images": [],
+  "metrics": {
+    "replies": "2",
+    "reposts": "1",
+    "likes": "6",
+    "bookmarks": "0",
+    "views": "13751"
+  },
+  "quoted_post": null,
+  "comments_count_fetched": 10,
+  "comments": [
+    {
+      "url": "https://x.com/yibingsg/status/2005098003237847260",
+      "author": "Fairice",
+      "handle": "@yibingsg",
+      "time": "2025-12-28T02:06:31.000Z",
+      "text": "有些汤唯和梁朝伟全裸激战的镜头！汤唯因此被封杀。",
+      "images": [],
+      "metrics": {
+        "replies": "2",
+        "reposts": "0",
+        "likes": "6",
+        "bookmarks": "0",
+        "views": "12688"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/zlexdl/status/2005110723211612311",
+      "author": "zlexdl",
+      "handle": "@zlexdl",
+      "time": "2025-12-28T02:57:04.000Z",
+      "text": "怎么给我感觉是逼良为娼拍 A 片呢",
+      "images": [],
+      "metrics": {
+        "replies": "3",
+        "reposts": "1",
+        "likes": "19",
+        "bookmarks": "0",
+        "views": "9391"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/yibingsg/status/2005113758113562848",
+      "author": "Fairice",
+      "handle": "@yibingsg",
+      "time": "2025-12-28T03:09:07.000Z",
+      "text": "都是过来人了！情场老手了！一个影帝，一个影坛小花，在一起做对彼此也没有啥障碍。如果安排林青霞和曾志伟可能就有难度了。",
+      "images": [],
+      "metrics": {
+        "replies": "1",
+        "reposts": "0",
+        "likes": "9",
+        "bookmarks": "0",
+        "views": "8014"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/crazyox/status/2005091280951627937",
+      "author": "Crazyox｜真人版",
+      "handle": "@crazyox",
+      "time": "2025-12-28T01:39:48.000Z",
+      "text": "李安这招培养默契真的绝",
+      "images": [],
+      "metrics": {
+        "replies": "0",
+        "reposts": "0",
+        "likes": "5",
+        "bookmarks": "0",
+        "views": "10386"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/connie31588069/status/2005085811587645861",
+      "author": "YiYi",
+      "handle": "@connie31588069",
+      "time": "2025-12-28T01:18:04.000Z",
+      "text": "男女间的默契是睡出来的",
+      "images": [],
+      "metrics": {
+        "replies": "0",
+        "reposts": "0",
+        "likes": "14",
+        "bookmarks": "0",
+        "views": "10664"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/TomSyuu/status/2005101437639111152",
+      "author": "Rosemead",
+      "handle": "@TomSyuu",
+      "time": "2025-12-28T02:20:10.000Z",
+      "text": "想起趙丹寫的一本書《地獄之門》，說是進入藝術殿堂的大門就是地獄之門。要把整個命都投進去。",
+      "images": [],
+      "metrics": {
+        "replies": "0",
+        "reposts": "0",
+        "likes": "1",
+        "bookmarks": "0",
+        "views": "7519"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/staylightblow8/status/2005102563193172133",
+      "author": "Staylight",
+      "handle": "@staylightblow8",
+      "time": "2025-12-28T02:24:38.000Z",
+      "text": "感觉王安排色戒的理由跟库布里克拍大开眼界的心理差不多。一辈子要拍一部真正的色情片满足一下自己",
+      "images": [],
+      "metrics": {
+        "replies": "0",
+        "reposts": "0",
+        "likes": "3",
+        "bookmarks": "0",
+        "views": "6426"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/ShinichiYao/status/2005178722660593691",
+      "author": "小S",
+      "handle": "@ShinichiYao",
+      "time": "2025-12-28T07:27:16.000Z",
+      "text": "這色是戒不了了",
+      "images": [],
+      "metrics": {
+        "replies": "0",
+        "reposts": "0",
+        "likes": "0",
+        "bookmarks": "0",
+        "views": "304"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/frankwang3927/status/2005072819265396738",
+      "author": "法兰克 · 王  ",
+      "handle": "@frankwang3927",
+      "time": "2025-12-28T00:26:27.000Z",
+      "text": "当年，出了几部电影佳作！\n\n还流传一个段子：\n看了《色戒》，\n才知道女人不可靠！\n看了《投名状》，\n才知道兄弟不可靠！\n看了《集结号》，\n才知道组织不可靠！\n\n凡跟人有关系的，\n的确大部分都不可靠！\n什么最可靠呢？\n唯有神（上帝）最可靠！",
+      "images": [],
+      "metrics": {
+        "replies": "3",
+        "reposts": "2",
+        "likes": "21",
+        "bookmarks": "0",
+        "views": "10646"
+      },
+      "quoted_post": null
+    },
+    {
+      "url": "https://x.com/realGeorgeChan/status/2005104623028502749",
+      "author": "壹號老闆 the Number One Boss ",
+      "handle": "@realGeorgeChan",
+      "time": "2025-12-28T02:32:49.000Z",
+      "text": "《色戒》無論原著還是電影，主題其實非常深刻。我相信這個作品會超越時間，不會「過時」。當然，不少人當一般的色情片看，真未嘗不可。這個電影屬於「雅俗共賞」巔峰之作，不同層次的觀眾真可以各得其所。",
+      "images": [],
+      "metrics": {
+        "replies": "0",
+        "reposts": "0",
+        "likes": "4",
+        "bookmarks": "0",
+        "views": "4015"
+      },
+      "quoted_post": null
+    }
+  ]
+};
+
+        // --- ★★★ 修复后的数值格式化函数 ★★★ ---
+        function formatNumber(numStr) {
+            if (!numStr) return "0";
+            
+            // 1. 转为字符串并去除首尾空格、换行符 (.trim())
+            const str = numStr.toString().trim();
+
+            // 2. 检查：如果字符串已经包含 K, M, B 等字符，直接返回 (如 "3.3M")
+            if (/[a-zA-Z]/.test(str)) {
+                return str;
+            }
+
+            // 3. 否则按照纯数字逻辑处理
+            const num = parseInt(str, 10);
+            if (isNaN(num)) return "0";
+
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+            if (num >= 1000) return (num / 1000).toFixed(1) + "K";
+            return num.toString();
+        }
+
+        // --- 日期格式化 ---
+        function formatDate(isoString) {
+            if(!isoString) return "";
+            const date = new Date(isoString);
+            const timePart = new Intl.DateTimeFormat('zh-CN', { hour: 'numeric', minute: 'numeric', hour12: true }).format(date);
+            const datePart = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
+            return `${timePart} · ${datePart}`;
+        }
+        
+        // --- 核心渲染逻辑 ---
+        function renderMediaGrid(images) {
+            if (!images || images.length === 0) return '';
+            
+            const displayImages = images.slice(0, 4);
+            const count = displayImages.length;
+            
+            let gridClass = 'grid-1';
+            if (count === 2) gridClass = 'grid-2';
+            else if (count === 3) gridClass = 'grid-3';
+            else if (count === 4) gridClass = 'grid-4';
+
+            const imgsHTML = displayImages.map(src => `<img src="${src}" alt="media">`).join('');
+            
+            return `<div class="media-grid ${gridClass}">${imgsHTML}</div>`;
+        }
+
+        // --- 主执行逻辑 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 填充文本
+            document.getElementById('main-author').innerText = postData.author || 'Unknown';
+            document.getElementById('main-handle').innerText = postData.handle || '';
+            document.getElementById('main-text').innerText = postData.text || '';
+            document.getElementById('post-timestamp').innerText = formatDate(postData.time);
+
+            // 渲染主帖图片
+            const mediaWrapper = document.getElementById('media-wrapper');
+            mediaWrapper.innerHTML = renderMediaGrid(postData.images);
+
+            // 填充统计数据 (会调用修复后的 formatNumber)
+            if (postData.metrics) {
+                document.getElementById('metric-views').innerText = formatNumber(postData.metrics.views);
+                document.getElementById('metric-replies').innerText = formatNumber(postData.metrics.replies);
+                document.getElementById('metric-reposts').innerText = formatNumber(postData.metrics.reposts);
+                document.getElementById('metric-likes').innerText = formatNumber(postData.metrics.likes);
+                document.getElementById('metric-bookmarks').innerText = formatNumber(postData.metrics.bookmarks);
+            }
+
+            // 处理引用贴
+            const quotedBox = document.getElementById('quoted-box');
+            if (postData.quoted_post && postData.quoted_post.author) {
+                quotedBox.style.display = 'block';
+                document.getElementById('quoted-author').innerText = postData.quoted_post.author;
+                document.getElementById('quoted-handle').innerText = postData.quoted_post.handle;
+                document.getElementById('quoted-text').innerText = postData.quoted_post.text;
+                
+                const quotedMediaWrapper = document.getElementById('quoted-media-wrapper');
+                if (postData.quoted_post.images && postData.quoted_post.images.length > 0) {
+                    quotedMediaWrapper.innerHTML = renderMediaGrid(postData.quoted_post.images);
+                } else {
+                    quotedMediaWrapper.innerHTML = '';
+                }
+
+            } else {
+                quotedBox.style.display = 'none';
+            }
+
+            // 处理评论区
+            const commentsList = document.getElementById('comments-list');
+            const commentsData = postData.comments || [];
+
+            if (commentsData.length > 0) {
+                let commentsHTML = '';
+                commentsData.forEach(comment => {
+                    const textHTML = comment.text ? `<div class="comment-text">${comment.text}</div>` : '';
+                    const likes = comment.metrics ? formatNumber(comment.metrics.likes) : '0';
+                    commentsHTML += `
+                        <div class="comment-item">
+                            <img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" class="comment-avatar">
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <div><span class="comment-name">${comment.author}</span></div>
+                                    <span class="comment-time">${new Date(comment.time).toLocaleDateString()}</span>
+                                </div>
+                                ${textHTML}
+                                <div class="comment-metrics">❤️ ${likes}</div>
+                            </div>
+                        </div>`;
+                });
+                commentsList.innerHTML = commentsHTML;
+            } else {
+                commentsList.innerHTML = '<div class="empty-state">暂无评论数据 / No comments fetched</div>';
+            }
+
+            // 二维码
+            if (postData.handle) {
+                const cleanHandle = postData.handle.replace('@', '');
+                document.getElementById('footer-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://x.com/${cleanHandle}`;
+            }
+        });
+    </script>
+</body>
+</html>
