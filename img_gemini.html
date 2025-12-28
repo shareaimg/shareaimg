@@ -3,131 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 转图片工具 (修复脚本执行版)</title>
+    <title>HTML 转图片 (Iframe 强力执行版)</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f4f4f9; padding: 20px; line-height: 1.6; }
-        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { color: #333; margin-top: 0; }
-        textarea { width: 100%; height: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: monospace; margin-bottom: 15px; box-sizing: border-box; }
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-run { background: #007bff; color: white; }
-        .btn-run:hover { background: #0056b3; }
-        .btn-run:disabled { background: #ccc; cursor: not-allowed; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 250px; font-family: monospace; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 15px; resize: vertical; }
+        .btn { background: #1d9bf0; color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
+        .btn:disabled { background: #ccc; }
         
-        /* 渲染沙盒 */
-        #render-sandbox { 
-            border: 2px dashed #bbb; border-radius: 8px; padding: 10px; 
-            background: #fff; min-height: 100px; overflow: auto; margin-top: 20px;
+        #preview-label { margin: 20px 0 10px 0; font-weight: bold; display: none; }
+        /* 隐藏的沙盒，用于渲染 */
+        #sandbox-wrapper { 
+            width: 500px; /* 匹配你 X Post 的宽度 */
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+            display: none; /* 截图前先预览 */
         }
+        iframe { width: 100%; border: none; overflow: hidden; }
         
-        /* 结果展示区 */
-        #result-preview { margin-top: 30px; display: none; text-align: center; border-top: 2px solid #eee; pt: 20px; }
-        #result-preview img { max-width: 100%; border: 1px solid #ddd; margin-top: 15px; }
-        .download-link { display: inline-block; margin-top: 10px; color: #007bff; font-weight: bold; text-decoration: none; }
+        #result-area { margin-top: 20px; text-align: center; display: none; border-top: 2px solid #eee; padding-top: 20px; }
+        #result-area img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .download-btn { display: inline-block; margin-top: 10px; color: #1d9bf0; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>HTML 代码转图片 (支持 JS 执行)</h2>
-    <p style="font-size: 14px; color: #666;">粘贴包含 &lt;script&gt; 的完整代码，系统会自动激活脚本。</p>
-    
-    <textarea id="code-input" placeholder="请在这里粘贴你的 HTML 代码..."></textarea>
-    
-    <div class="controls">
-        <button id="run-btn" class="btn-run" onclick="handleGenerate()">解析代码并生成图片</button>
-    </div>
+    <h2>HTML 转图片生成器 (支持 DOMContentLoaded)</h2>
+    <textarea id="htmlInput" placeholder="在这里粘贴完整的 HTML 代码 (包含 <html>, <style>, <script> 等)..."></textarea>
+    <button id="genBtn" class="btn" onclick="startGeneration()">执行渲染并生成图片</button>
 
-    <div style="font-weight: bold; margin-bottom: 5px;">渲染预览区：</div>
-    <div id="render-sandbox">
-        <div style="color: #999; text-align: center; padding: 40px;">代码渲染结果将显示在这里</div>
-    </div>
+    <div id="preview-label">1. 渲染预览:</div>
+    <div id="sandbox-wrapper">
+        </div>
 
-    <div id="result-preview">
-        <div style="font-weight: bold;">生成结果 (右键可另存为)：</div>
-        <div id="image-output"></div>
-        <a id="download-link" class="download-link" download="my_image.png">点击下载图片</a>
+    <div id="result-area">
+        <div style="font-weight: bold; margin-bottom: 10px;">2. 生成的图片:</div>
+        <div id="imageOutput"></div>
+        <a id="downloadLink" class="download-btn" download="generated_image.png">保存图片到本地</a>
     </div>
 </div>
 
 <script>
-    async function handleGenerate() {
-        const input = document.getElementById('code-input').value.trim();
-        const sandbox = document.getElementById('render-sandbox');
-        const runBtn = document.getElementById('run-btn');
-        const resultPreview = document.getElementById('result-preview');
-        const output = document.getElementById('image-output');
-        const downloadLink = document.getElementById('download-link');
+    async function startGeneration() {
+        const code = document.getElementById('htmlInput').value.trim();
+        if (!code) return alert("请粘贴代码！");
 
-        if (!input) return alert("请输入代码！");
+        const btn = document.getElementById('genBtn');
+        const wrapper = document.getElementById('sandbox-wrapper');
+        const resultArea = document.getElementById('result-area');
+        const output = document.getElementById('imageOutput');
+        const previewLabel = document.getElementById('preview-label');
 
-        // 按钮状态更新
-        runBtn.disabled = true;
-        runBtn.textContent = "正在激活脚本并渲染...";
-        resultPreview.style.display = 'none';
-
-        // 1. 清空沙盒
-        sandbox.innerHTML = '';
-
-        // 2. 将 HTML 注入沙盒 (此时 JS 不会执行)
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(input, 'text/html');
+        btn.disabled = true;
+        btn.textContent = "正在构建沙盒并执行脚本...";
         
-        // 将解析出的 body 内容和 head 里的 style 移入沙盒
-        const elements = Array.from(doc.body.childNodes).concat(Array.from(doc.head.childNodes));
-        elements.forEach(el => {
-            if (el.tagName !== 'SCRIPT') {
-                sandbox.appendChild(el.cloneNode(true));
-            }
+        // 1. 清理旧内容
+        wrapper.innerHTML = '';
+        wrapper.style.display = 'block';
+        previewLabel.style.display = 'block';
+
+        // 2. 创建 Iframe
+        const iframe = document.createElement('iframe');
+        wrapper.appendChild(iframe);
+
+        // 3. 将用户代码写入 Iframe
+        const iframeDoc = iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(code);
+        iframeDoc.close();
+
+        // 4. 等待 Iframe 加载完成及脚本执行
+        // 我们需要等待 iframe 内部的一切（图片、脚本、二维码 API）都准备好
+        await new Promise(resolve => {
+            iframe.onload = () => setTimeout(resolve, 2000); // 额外给 2 秒让内部 JS 渲染数据
         });
 
-        // 3. 【核心步骤】手动激活脚本
-        const scripts = doc.querySelectorAll('script');
-        for (let oldScript of scripts) {
-            const newScript = document.createElement('script');
-            
-            // 复制属性 (src, type 等)
-            Array.from(oldScript.attributes).forEach(attr => {
-                newScript.setAttribute(attr.name, attr.value);
-            });
-            
-            // 复制内联脚本内容
-            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-            
-            // 将脚本插入沙盒以触发执行
-            sandbox.appendChild(newScript);
-        }
+        // 调整 iframe 高度以适应内容
+        iframe.style.height = iframeDoc.body.scrollHeight + 'px';
 
-        // 4. 等待 JS 执行和图片加载
-        // 因为脚本执行通常是异步的（比如填充数据、渲染图表），我们需要给它一点缓冲时间
-        await new Promise(resolve => setTimeout(resolve, 2000)); 
-
-        // 5. 调用截图
         try {
-            const canvas = await html2canvas(sandbox, {
+            // 5. 调用截图
+            // 注意：我们直接截取 iframe 内部的 body
+            const canvas = await html2canvas(iframeDoc.body, {
                 useCORS: true,
                 scale: 2,
-                logging: false,
-                backgroundColor: '#ffffff' // 建议设置明确背景色，防止透明背景黑边
+                backgroundColor: '#ffffff',
+                // 重要：因为是截取 iframe 内部，需要处理滚动偏移
+                scrollY: -window.scrollY 
             });
 
             const imgData = canvas.toDataURL('image/png');
             output.innerHTML = `<img src="${imgData}" />`;
-            downloadLink.href = imgData;
-            downloadLink.download = `X_Post_${Date.now()}.png`;
-            resultPreview.style.display = 'block';
+            document.getElementById('downloadLink').href = imgData;
             
-            // 平滑滚动到结果
-            resultPreview.scrollIntoView({ behavior: 'smooth' });
+            resultArea.style.display = 'block';
+            btn.textContent = "生成成功！";
+            
+            // 滚动到结果
+            resultArea.scrollIntoView({ behavior: 'smooth' });
 
         } catch (err) {
-            console.error("截图失败:", err);
-            alert("图片生成失败，请检查控制台。");
+            console.error(err);
+            alert("截图过程出错，详情见控制台");
         } finally {
-            runBtn.disabled = false;
-            runBtn.textContent = "解析代码并生成图片";
+            btn.disabled = false;
+            btn.textContent = "执行渲染并生成图片";
         }
     }
 </script>
