@@ -77,7 +77,7 @@
         // 4. 等待 Iframe 加载完成及脚本执行
         // 我们需要等待 iframe 内部的一切（图片、脚本、二维码 API）都准备好
         await new Promise(resolve => {
-            iframe.onload = () => setTimeout(resolve, 2000); // 额外给 2 秒让内部 JS 渲染数据
+            iframe.onload = () => setTimeout(resolve, 5000); // 额外给 2 秒让内部 JS 渲染数据
         });
 
         // 调整 iframe 高度以适应内容
