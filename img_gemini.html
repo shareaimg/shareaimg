@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 转图片工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f4f7f6; }
+        .container { display: flex; flex-direction: column; gap: 20px; max-width: 1000px; margin: 0 auto; }
+        textarea { width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; }
+        .controls { display: flex; gap: 10px; }
+        button { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        #capture-area { 
+            background: white; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            min-height: 100px;
+            overflow: auto;
+        }
+        .result-section { margin-top: 20px; border-top: 2px solid #eee; pt: 20px; }
+        img { max-width: 100%; border: 1px solid #ddd; margin-top: 10px; }
+        .label { font-weight: bold; margin-bottom: 5px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>HTML 代码转图片</h2>
+    
+    <div>
+        <span class="label">1. 在下方输入 HTML 代码 (支持内联 CSS):</span>
+        <textarea id="htmlInput" placeholder="请输入完整 HTML 代码...例如：<div style='color:red; padding:20px; background:yellow;'>Hello World</div>"></textarea>
+    </div>
+
+    <div class="controls">
+        <button onclick="generateImage()">生成图片</button>
+        <button onclick="clearAll()" style="background: #6c757d;">清空</button>
+    </div>
+
+    <div>
+        <span class="label">2. 渲染预览区 (即刻生成内容):</span>
+        <div id="capture-area"></div>
+    </div>
+
+    <div class="result-section" id="result-section" style="display: none;">
+        <span class="label">3. 生成的图片 (右键另存为):</span>
+        <div id="imageOutput"></div>
+        <br>
+        <a id="downloadBtn" style="display: none; text-decoration: none; color: #007bff; font-weight: bold;">[ 点击下载图片 ]</a>
+    </div>
+</div>
+
+<script>
+    async function generateImage() {
+        const htmlContent = document.getElementById('htmlInput').value;
+        const captureArea = document.getElementById('capture-area');
+        const imageOutput = document.getElementById('imageOutput');
+        const resultSection = document.getElementById('result-section');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        if (!htmlContent.trim()) {
+            alert("请输入 HTML 代码！");
+            return;
+        }
+
+        // 1. 将输入的 HTML 注入预览区
+        // 注意：这会将代码作为 DOM 元素渲染出来
+        captureArea.innerHTML = htmlContent;
+
+        try {
+            // 2. 调用 html2canvas 转换预览区
+            // useCORS: true 允许跨域图片加载（如果 HTML 里有外链图片且服务器允许）
+            const canvas = await html2canvas(captureArea, {
+                useCORS: true,
+                scale: 2, // 提高清晰度
+                backgroundColor: null // 保持透明背景（如果原本是透明的）
+            });
+
+            // 3. 将 Canvas 转换为图片展示
+            const imgData = canvas.toDataURL('image/png');
+            imageOutput.innerHTML = `<img src="${imgData}" alt="Generated Image">`;
+            
+            // 4. 设置下载链接
+            downloadBtn.href = imgData;
+            downloadBtn.download = `screenshot_${new Date().getTime()}.png`;
+            downloadBtn.style.display = 'inline-block';
+            resultSection.style.display = 'block';
+
+        } catch (error) {
+            console.error("生成失败:", error);
+            alert("生成图片出错，请检查 HTML 代码或浏览器控制台。");
+        }
+    }
+
+    function clearAll() {
+        document.getElementById('htmlInput').value = '';
+        document.getElementById('capture-area').innerHTML = '';
+        document.getElementById('result-section').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
