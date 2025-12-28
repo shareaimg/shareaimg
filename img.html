@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 转图片工具（使用 html2canvas）</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        textarea { width: 100%; height: 200px; margin-bottom: 10px; }
+        #preview { border: 1px solid #ccc; padding: 20px; min-height: 100px; margin-top: 20px; background: white; }
+        button { padding: 10px 20px; margin-right: 10px; }
+        #output { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>HTML 代码转图片工具</h1>
+    <p>在下方输入 HTML 代码（可包含 &lt;style&gt;、&lt;img&gt; 等），点击预览后生成图片。</p>
+    
+    <textarea id="htmlInput" placeholder="例如：&lt;div style=&quot;background: yellow; padding: 20px;&quot;&gt;&lt;h1&gt;Hello World&lt;/h1&gt;&lt;p&gt;这是一段超长内容...（可复制多行测试长页面）&lt;/p&gt;&lt;/div&gt;">
+&lt;div style="width: 800px; padding: 20px; background: linear-gradient(to bottom, #f0f0f0, #ffffff); border: 2px solid #333; border-radius: 10px;">
+    &lt;h1 style="color: red; text-align: center;">测试标题&lt;/h1>
+    &lt;p>这是一段示例文本。你可以输入任意 HTML。&lt;/p>
+    &lt;img src="https://via.placeholder.com/400x200" alt="示例图片" crossorigin="anonymous">
+    &lt;p>添加更多内容来测试超长页面...（复制多行）&lt;/p>
+&lt;/div>
+    </textarea>
+    
+    <button onclick="previewHTML()">预览 HTML</button>
+    <button onclick="generateImage()">生成图片并下载</button>
+    
+    <h2>预览区域（将在这里渲染你的 HTML）</h2>
+    <div id="preview"></div>
+    
+    <h2>生成的图片预览</h2>
+    <div id="output"></div>
+
+    <script>
+        function previewHTML() {
+            const input = document.getElementById('htmlInput').value;
+            const preview = document.getElementById('preview');
+            preview.innerHTML = input;  // 直接渲染用户输入的 HTML
+            document.getElementById('output').innerHTML = '';  // 清空旧图片
+        }
+
+        async function generateImage() {
+            const preview = document.getElementById('preview');
+            if (preview.innerHTML === '') {
+                alert('请先点击“预览 HTML”渲染内容！');
+                return;
+            }
+
+            // 设置选项以支持超长内容
+            const canvas = await html2canvas(preview, {
+                scale: 2,  // 提高清晰度（可选）
+                useCORS: true,  // 尝试处理跨域图片
+                allowTaint: false,  // 安全模式
+                logging: true,  // 调试时开启
+                width: preview.scrollWidth,
+                height: preview.scrollHeight,
+                scrollX: 0,
+                scrollY: 0
+            });
+
+            // 显示 canvas 预览
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+            output.appendChild(canvas);
+
+            // 自动下载图片
+            const link = document.createElement('a');
+            link.download = 'html-to-image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // 页面加载时自动预览默认内容
+        window.onload = previewHTML;
+    </script>
+</body>
+</html>
