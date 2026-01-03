@@ -24,7 +24,9 @@ function populatePage() {
     // Update meta tags and SEO
     if (config.site) {
         const siteUrl = config.site.url || window.location.origin + window.location.pathname;
-        const siteImage = config.site.image ? (config.site.image.startsWith('http') ? config.site.image : siteUrl + config.site.image) : '';
+        // Ensure siteUrl ends with / for proper path joining
+        const baseUrl = siteUrl.endsWith('/') ? siteUrl : siteUrl + '/';
+        const siteImage = config.site.image ? (config.site.image.startsWith('http') ? config.site.image : baseUrl + config.site.image) : '';
         
         // Title
         if (config.site.title) {

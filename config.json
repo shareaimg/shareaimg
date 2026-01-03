@@ -5,7 +5,7 @@
     "description": "A Chrome extension that converts X (Twitter) tweets into beautiful share card images with one click. Free Chrome extension for creating stunning Twitter share cards. Download X Snap now!",
     "keywords": "X Snap, Twitter, Chrome Extension, Share Card, Social Media, Twitter Card Generator, Tweet to Image, Twitter Screenshot, Share Card Creator, Chrome Extension Download, Twitter Share Tool, Social Media Tool, Tweet Card Maker",
     "url": "https://shareaimg.github.io/shareaimg/",
-    "image": "/img/X+Snap+Preview.png"
+    "image": "img/X+Snap+Preview.png"
   },
   "hero": {
     "title": "X Snap",
@@ -13,7 +13,7 @@
     "description": "A powerful Chrome extension that converts X (Twitter) tweets into stunning share card images. Perfect for sharing on WeChat, Discord, Telegram, and other social platforms.",
     "ctaText": "Install from Chrome Web Store",
     "ctaLink": "https://chromewebstore.google.com/detail/cliapideplfechpbplmhnofefcgdnjkb",
-    "previewImage": "/img/X+Snap+Preview.png",
+    "previewImage": "img/X+Snap+Preview.png",
     "badges": [
       "✓ Chrome Web Store",
       "✓ Core Features Free"
@@ -58,7 +58,7 @@
   "howToUse": {
     "title": "How to Use",
     "subtitle": "Get started in minutes",
-    "demoImage": "/img/snap.png",
+    "demoImage": "img/snap.png",
     "steps": [
       {
         "number": "1",
@@ -94,22 +94,22 @@
       {
         "title": "Light Theme - Grid Layout",
         "description": "Clean and modern grid layout with light theme",
-        "image": "/img/grid.png"
+        "image": "img/grid.png"
       },
       {
         "title": "Light Theme - Masonry Layout",
         "description": "Elegant dark theme with masonry layout for multiple images",
-        "image": "/img/masonry.png"
+        "image": "img/masonry.png"
       },
       {
         "title": "Stacked Cards Layout",
         "description": "Perfect for tweets with quoted tweets and comments",
-        "image": "/img/stacked.png"
+        "image": "img/stacked.png"
       },
       {
         "title": "Collage Layout",
         "description": "Creative collage layout for visual content",
-        "image": "/img/collage.png"
+        "image": "img/collage.png"
       }
     ]
   },
