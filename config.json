@@ -146,7 +146,7 @@
       },
       {
         "question": "How is my data privacy protected?",
-        "answer": "X Snap processes most data locally in your browser. When generating QR codes, only the tweet URL is sent to the QR code service provider to create the code. No other tweet content, images, or personal information is transmitted to external servers. Your privacy is our top priority."
+        "answer": "X Snap processes all data locally in your browser. No tweet content, images, or personal information is transmitted to external servers. Your privacy is our top priority."
       }
     ]
   },
