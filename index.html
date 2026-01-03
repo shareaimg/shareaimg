@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" id="metaDescription">
+    <meta name="keywords" content="" id="metaKeywords">
+    <meta name="author" content="X Snap">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="theme-color" content="#1DA1F2">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="" id="ogUrl">
+    <meta property="og:title" content="" id="ogTitle">
+    <meta property="og:description" content="" id="ogDescription">
+    <meta property="og:image" content="" id="ogImage">
+    <meta property="og:site_name" content="X Snap">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="" id="twitterUrl">
+    <meta name="twitter:title" content="" id="twitterTitle">
+    <meta name="twitter:description" content="" id="twitterDescription">
+    <meta name="twitter:image" content="" id="twitterImage">
+    <meta name="twitter:creator" content="@shareaimg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="" id="canonicalUrl">
+    
+    <title id="pageTitle">X Snap - Transform X posts into beautiful share cards</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json" id="structuredData"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">X Snap</div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-to-use">How to Use</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+                <a href="https://chromewebstore.google.com/detail/cliapideplfechpbplmhnofefcgdnjkb" class="btn-primary nav-cta" target="_blank" rel="noopener noreferrer">Install from Chrome Web Store</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title" id="heroTitle">X Snap</h1>
+                    <p class="hero-subtitle" id="heroSubtitle">Transform X posts into beautiful share cards instantly</p>
+                    <p class="hero-description" id="heroDescription">A powerful Chrome extension that converts X (Twitter) tweets into stunning share card images. Perfect for sharing on WeChat, Discord, Telegram, and other social platforms.</p>
+                    <a href="#" class="btn-primary btn-large" id="heroCTA">
+                        <span>Install from Chrome Web Store</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <div class="hero-badges" id="heroBadges">
+                        <!-- Badges will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-preview" id="heroPreview">
+                        <img src="" alt="X Snap Preview" id="heroPreviewImage">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-background"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="featuresTitle">Key Features</h2>
+                <p class="section-subtitle" id="featuresSubtitle">Everything you need to create beautiful share cards</p>
+            </div>
+            <div class="features-grid" id="featuresGrid">
+                <!-- Features will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+    <section class="how-to-use" id="how-to-use">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="howToUseTitle">How to Use</h2>
+                <p class="section-subtitle" id="howToUseSubtitle">Get started in minutes</p>
+            </div>
+            <div class="how-to-use-content">
+                <div class="steps-container" id="stepsContainer">
+                    <!-- Steps will be populated by JavaScript -->
+                </div>
+                <div class="how-to-use-demo" id="howToUseDemo">
+                    <!-- Demo image will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="galleryTitle">Gallery</h2>
+                <p class="section-subtitle" id="gallerySubtitle">See X Snap in action</p>
+            </div>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Modal (Lightbox) -->
+    <div class="gallery-modal" id="galleryModal">
+        <div class="gallery-modal-overlay" id="galleryModalOverlay"></div>
+        <div class="gallery-modal-content">
+            <button class="gallery-modal-close" id="galleryModalClose" aria-label="Close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="gallery-modal-nav gallery-modal-prev" id="galleryModalPrev" aria-label="Previous">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="gallery-modal-nav gallery-modal-next" id="galleryModalNext" aria-label="Next">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <img class="gallery-modal-image" id="galleryModalImage" src="" alt="">
+            <div class="gallery-modal-info" id="galleryModalInfo">
+                <h3 class="gallery-modal-title" id="galleryModalTitle"></h3>
+                <p class="gallery-modal-description" id="galleryModalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" id="faqTitle">Frequently Asked Questions</h2>
+            </div>
+            <div class="faq-container" id="faqContainer">
+                <!-- FAQ items will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Download CTA Section -->
+    <section class="download-cta" id="download">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title" id="downloadTitle">Ready to get started?</h2>
+                <p class="cta-subtitle" id="downloadSubtitle">Install X Snap now and start creating beautiful share cards</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn-primary btn-large" id="downloadCTA">
+                        <span>Install from Chrome Web Store</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-logo">X Snap</h3>
+                    <p class="footer-description">Transform X posts into beautiful share cards instantly.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-to-use">How to Use</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-heading">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" id="footerChromeWebStore">Chrome Web Store</a></li>
+                        <li><a href="#" id="footerIssues">Report Issue</a></li>
+                        <li><a href="#" id="footerEmail">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-heading">Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" id="socialTwitter" aria-label="Twitter" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright" id="footerCopyright">© 2024 X Snap. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#" id="footerPrivacy">Privacy Policy</a>
+                    <span>•</span>
+                    <a href="#" id="footerTerms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

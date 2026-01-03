@@ -1,0 +1,173 @@
+{
+  "site": {
+    "name": "X Snap",
+    "title": "X Snap - Transform X posts into beautiful share cards instantly",
+    "description": "A Chrome extension that converts X (Twitter) tweets into beautiful share card images with one click. Free Chrome extension for creating stunning Twitter share cards. Download X Snap now!",
+    "keywords": "X Snap, Twitter, Chrome Extension, Share Card, Social Media, Twitter Card Generator, Tweet to Image, Twitter Screenshot, Share Card Creator, Chrome Extension Download, Twitter Share Tool, Social Media Tool, Tweet Card Maker",
+    "url": "https://shareaimg.github.io/shareaimg/",
+    "image": "/img/X+Snap+Preview.png"
+  },
+  "hero": {
+    "title": "X Snap",
+    "subtitle": "Transform X posts into beautiful share cards instantly",
+    "description": "A powerful Chrome extension that converts X (Twitter) tweets into stunning share card images. Perfect for sharing on WeChat, Discord, Telegram, and other social platforms.",
+    "ctaText": "Install from Chrome Web Store",
+    "ctaLink": "https://chromewebstore.google.com/detail/cliapideplfechpbplmhnofefcgdnjkb",
+    "previewImage": "/img/X+Snap+Preview.png",
+    "badges": [
+      "✓ Chrome Web Store",
+      "✓ Core Features Free"
+    ]
+  },
+  "features": {
+    "title": "Key Features",
+    "subtitle": "Everything you need to create beautiful share cards",
+    "items": [
+      {
+        "icon": "⚡",
+        "title": "One-Click Generation",
+        "description": "Convert any X post into a beautiful share card with just one click. No complex setup required."
+      },
+      {
+        "icon": "🎨",
+        "title": "Multiple Themes & Layouts",
+        "description": "Choose from various themes (Light/Dark) and layouts (Grid, Masonry, Stacked Cards, Collage) to match your style."
+      },
+      {
+        "icon": "🖼️",
+        "title": "Rich Content Support",
+        "description": "Supports multiple images, quoted tweets, comments, and all tweet statistics. Capture everything in one card."
+      },
+      {
+        "icon": "📱",
+        "title": "QR Code Generation",
+        "description": "Automatically generates QR codes linking to the original tweet and extension download page."
+      },
+      {
+        "icon": "📋",
+        "title": "Copy to Clipboard",
+        "description": "Instantly copy the generated card to your clipboard for quick sharing across platforms."
+      },
+      {
+        "icon": "🖼️",
+        "title": "High-Quality Output",
+        "description": "Export images in high resolution (@2x) for crisp, professional-looking share cards."
+      }
+    ]
+  },
+  "howToUse": {
+    "title": "How to Use",
+    "subtitle": "Get started in minutes",
+    "demoImage": "/img/snap.png",
+    "steps": [
+      {
+        "number": "1",
+        "title": "Install Extension",
+        "description": "Install X Snap from Chrome Web Store or load it in developer mode."
+      },
+      {
+        "number": "2",
+        "title": "Open X (Twitter)",
+        "description": "Navigate to X (Twitter) website and find the tweet you want to convert."
+      },
+      {
+        "number": "3",
+        "title": "Click the Scissors Icon",
+        "description": "Click the scissors icon button that appears on the tweet to open the card generator."
+      },
+      {
+        "number": "4",
+        "title": "Customize Your Card",
+        "description": "Choose your preferred theme, layout, and content options in the popup window."
+      },
+      {
+        "number": "5",
+        "title": "Copy or Download",
+        "description": "Click copy to clipboard or download as PNG, then share it on your favorite platform."
+      }
+    ]
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "See X Snap in action",
+    "items": [
+      {
+        "title": "Light Theme - Grid Layout",
+        "description": "Clean and modern grid layout with light theme",
+        "image": "/img/grid.png"
+      },
+      {
+        "title": "Light Theme - Masonry Layout",
+        "description": "Elegant dark theme with masonry layout for multiple images",
+        "image": "/img/masonry.png"
+      },
+      {
+        "title": "Stacked Cards Layout",
+        "description": "Perfect for tweets with quoted tweets and comments",
+        "image": "/img/stacked.png"
+      },
+      {
+        "title": "Collage Layout",
+        "description": "Creative collage layout for visual content",
+        "image": "/img/collage.png"
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "How do I install the extension?",
+        "answer": "You can install X Snap from the Chrome Web Store. If it's not yet available, you can load it in developer mode by downloading the extension files and enabling developer mode in Chrome's extension settings."
+      },
+      {
+        "question": "Which browsers are supported?",
+        "answer": "Currently, X Snap is available for Chrome and other Chromium-based browsers like Edge, Brave, and Opera. Support for Firefox and Safari is planned for future releases."
+      },
+      {
+        "question": "What is the image quality of generated cards?",
+        "answer": "X Snap generates high-quality images at @2x resolution, ensuring crisp and clear share cards that look great on all devices and platforms."
+      },
+      {
+        "question": "Does it support Chinese tweets?",
+        "answer": "Yes! X Snap has full support for Chinese text rendering, including proper font handling and text layout for Chinese characters."
+      },
+      {
+        "question": "Can I customize the card style?",
+        "answer": "Absolutely! You can choose from multiple themes (Light/Dark), layouts (Grid, Masonry, Stacked Cards, Collage), and toggle various content elements like statistics, QR codes, and comments."
+      },
+      {
+        "question": "What are the QR codes for?",
+        "answer": "X Snap automatically generates two QR codes: one at the top linking to the original tweet, and one at the bottom linking to the extension download page, making it easy for others to find and install the extension."
+      },
+      {
+        "question": "Is X Snap free?",
+        "answer": "Yes, X Snap is currently free to use, and the vast majority of features will remain free. We are planning to introduce a Pro version in the future that will offer additional premium features for advanced users. The core functionality will always be available for free."
+      },
+      {
+        "question": "How is my data privacy protected?",
+        "answer": "X Snap processes most data locally in your browser. When generating QR codes, only the tweet URL is sent to the QR code service provider to create the code. No other tweet content, images, or personal information is transmitted to external servers. Your privacy is our top priority."
+      }
+    ]
+  },
+  "footer": {
+    "links": {
+      "chromeWebStore": "https://chromewebstore.google.com/detail/cliapideplfechpbplmhnofefcgdnjkb",
+      "issues": "https://github.com/shareaimg/x-snap/issues",
+      "email": "mailto:n0morefreepoc@gmail.com"
+    },
+    "social": {
+      "twitter": "https://x.com/Snglty_ai"
+    },
+    "copyright": "© 2024 X Snap. All rights reserved.",
+    "privacyPolicy": "#",
+    "termsOfService": "#"
+  },
+  "download": {
+    "title": "Ready to get started?",
+    "subtitle": "Install X Snap now and start creating beautiful share cards",
+    "ctaText": "Install from Chrome Web Store",
+    "ctaLink": "https://chromewebstore.google.com/detail/cliapideplfechpbplmhnofefcgdnjkb"
+  }
+}
+
